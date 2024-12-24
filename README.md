@@ -54,8 +54,8 @@ Create a `.env` file in each of the following directories:
 
 ### frontend
 
-- `VITE_SERVER_WEBCAM_WIDTH` - Server webcam width (should match backend)
-- `VITE_SERVER_WEBCAM_HEIGHT` - Server webcam height (should match backend)
+- `VITE_SERVER_WEBCAM_WIDTH` - Server webcam width (should match workflow)
+- `VITE_SERVER_WEBCAM_HEIGHT` - Server webcam height (should match workflow)
 
 ## Running the Application
 
