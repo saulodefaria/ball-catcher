@@ -10,9 +10,10 @@ const DIFFICULTY_SETTINGS = {
 const StartScreen = ({ onStart }) => {
   return (
     <div className="start-screen">
-      <h1>Boulder Crash</h1>
+      <h1>Ball Catcher</h1>
+      <h2>Catch the balls before they hit the ground!</h2>
       <div className="difficulty-select">
-        <h2>Select Difficulty</h2>
+        <h3>Select Difficulty</h3>
         <div className="difficulty-buttons">
           {Object.entries(DIFFICULTY_SETTINGS).map(([level, settings]) => (
             <button
