@@ -1,10 +1,5 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import "./Boulders.css";
-
-const WEBCAM_WIDTH = 1920;
-const WEBCAM_HEIGHT = 1080;
-// const WEBCAM_WIDTH = 640;
-// const WEBCAM_HEIGHT = 480;
 const BOULDER_SIZE = 30; // pixels
 
 const Boulder = ({ x, y }) => {
@@ -36,9 +31,17 @@ const DebugBox = ({ obj, color }) => (
   />
 );
 
-const Boulders = ({ handPositions, gameSettings, onScoreUpdate }) => {
+const SERVER_WIDTH = 1920;
+const SERVER_HEIGHT = 1080;
+
+const Boulders = ({ handPositions, displaySize, gameSettings, onScoreUpdate }) => {
   const [boulders, setBoulders] = useState([]);
   const [, setScore] = useState(0);
+
+  // Scale coordinates from server (1920x1080) to display size
+  const scaleCoordinates = (coord, isWidth = true) => {
+    return isWidth ? (coord * displaySize.width) / SERVER_WIDTH : (coord * displaySize.height) / SERVER_HEIGHT;
+  };
 
   // Update boulder spawning based on difficulty
   useEffect(() => {
@@ -49,14 +52,14 @@ const Boulders = ({ handPositions, gameSettings, onScoreUpdate }) => {
         ...prev,
         {
           id: Date.now(),
-          x: Math.random() * (WEBCAM_WIDTH - BOULDER_SIZE - 40),
+          x: Math.random() * (displaySize.width - BOULDER_SIZE - 40),
           y: 0,
         },
       ]);
     }, gameSettings.spawnInterval);
 
     return () => clearInterval(interval);
-  }, [gameSettings]);
+  }, [gameSettings, displaySize]);
 
   // Update boulder movement based on difficulty
   useEffect(() => {
@@ -66,22 +69,22 @@ const Boulders = ({ handPositions, gameSettings, onScoreUpdate }) => {
       setBoulders((prev) =>
         prev
           .map((boulder) => ({ ...boulder, y: boulder.y + gameSettings.speed }))
-          .filter((boulder) => boulder.y < WEBCAM_HEIGHT)
+          .filter((boulder) => boulder.y < displaySize.height)
       );
     }, 30);
 
     return () => clearInterval(timer);
   }, [gameSettings]);
 
-  // Update collision detection to increment score
+  // Update collision detection with scaled coordinates
   useEffect(() => {
     if (handPositions && handPositions.length > 0) {
       handPositions.forEach((hand) => {
         const handObj = {
-          x: WEBCAM_WIDTH - (hand.x + hand.width),
-          y: hand.y,
-          width: hand.width,
-          height: hand.height,
+          x: displaySize.width - scaleCoordinates(hand.x + hand.width),
+          y: scaleCoordinates(hand.y, false),
+          width: scaleCoordinates(hand.width),
+          height: scaleCoordinates(hand.height, false),
         };
 
         boulders.forEach((boulder) => {
@@ -103,29 +106,27 @@ const Boulders = ({ handPositions, gameSettings, onScoreUpdate }) => {
         });
       });
     }
-  }, [handPositions, boulders, onScoreUpdate]);
+  }, [handPositions, boulders, onScoreUpdate, displaySize]);
 
   return (
-    <>
-      <div className="boulders-container">
-        {boulders.map((boulder) => (
-          <Boulder key={boulder.id} x={boulder.x} y={boulder.y} />
+    <div className="boulders-container">
+      {boulders.map((boulder) => (
+        <Boulder key={boulder.id} x={boulder.x} y={boulder.y} />
+      ))}
+      {process.env.NODE_ENV === "development" &&
+        handPositions?.map((hand, i) => (
+          <DebugBox
+            key={i}
+            obj={{
+              x: scaleCoordinates(hand.x),
+              y: scaleCoordinates(hand.y, false),
+              width: scaleCoordinates(hand.width),
+              height: scaleCoordinates(hand.height, false),
+            }}
+            color="red"
+          />
         ))}
-        {process.env.NODE_ENV === "development" &&
-          handPositions?.map((hand, i) => (
-            <DebugBox
-              key={i}
-              obj={{
-                x: hand.x,
-                y: hand.y,
-                width: hand.width,
-                height: hand.height,
-              }}
-              color="red"
-            />
-          ))}
-      </div>
-    </>
+    </div>
   );
 };
 

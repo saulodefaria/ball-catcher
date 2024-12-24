@@ -9,7 +9,6 @@
   align-items: center;
   background-color: #1a1a1a;
   padding: 20px;
-  min-height: 100vh;
 }
 
 .game-container {
@@ -21,6 +20,7 @@
   justify-content: center;
   align-items: center;
   overflow: hidden;
+  aspect-ratio: 16 / 9;
 }
 
 .exit-button {

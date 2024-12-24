@@ -9,7 +9,7 @@ function App() {
   const webcamRef = useRef(null);
   const [handPositions, setHandPositions] = useState([]);
   const socketRef = useRef(null);
-  const [videoSettings, setVideoSettings] = useState(null);
+  const [displaySize, setDisplaySize] = useState(null);
   const [gameSettings, setGameSettings] = useState(null);
   const [score, setScore] = useState(0);
 
@@ -55,15 +55,19 @@ function App() {
     setGameSettings(null);
   };
 
+  const handleDisplaySize = (size) => {
+    setDisplaySize(size);
+  };
+
   return (
     <div className="App">
       <div className="game-container">
-        <CameraFeed ref={webcamRef} onVideoSettings={setVideoSettings} />
-        {gameSettings ? (
+        <CameraFeed ref={webcamRef} onDisplaySize={handleDisplaySize} />
+        {gameSettings && displaySize ? (
           <>
             <Boulders
               handPositions={handPositions}
-              videoSettings={videoSettings}
+              displaySize={displaySize}
               gameSettings={gameSettings}
               onScoreUpdate={setScore}
             />
