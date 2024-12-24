@@ -1,20 +1,21 @@
 # Ball Catcher App
 
-An interactive game that uses computer vision to detect hand movements and catch falling balls.
+An interactive game that uses computer vision to detect hand movements and catch falling balls, powered by [Roboflow](https://roboflow.com).
 
 ## Prerequisites
 
 - Python 3.12 or higher
 - Node.js 18 or higher
 - npm 9 or higher
+- Have a workflow in Roboflow (you can fork [the one I created here](https://app.roboflow.com/workflows/embed/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ3b3JrZmxvd0lkIjoiVkVYbGZXNXRXNk02ZmtjRU40NVEiLCJ3b3Jrc3BhY2VJZCI6IkJDV3ZsODBCTzVaYkVQUnI0OXlmb3hiU0xESTIiLCJ1c2VySWQiOiJCQ1d2bDgwQk81WmJFUFJyNDl5Zm94YlNMREkyIiwiaWF0IjoxNzM1MDYzMjIxfQ.t8Oa29CXZ9Ct1toChuO4ZwaHPNEDhG_NoB5HFItiZ5I))
 
 ## Installation
 
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/ball-catcher-app.git
-   cd ball-catcher-app
+   git clone https://github.com/saulodefaria/ball-catcher.git
+   cd ball-catcher
    ```
 
 2. Set up the Python backend:
@@ -69,8 +70,8 @@ An interactive game that uses computer vision to detect hand movements and catch
 ### Backend (.env)
 
 - `API_KEY` - Your API key for the computer vision service
-- `WORKSPACE_NAME` - Your workspace name
-- `WORKFLOW_ID` - Your workflow ID
+- `WORKSPACE_NAME` - Your Roboflow workspace name
+- `WORKFLOW_ID` - Your Roboflow workflow ID
 - `FRAME_WIDTH` - Webcam frame width (default: 1920)
 - `FRAME_HEIGHT` - Webcam frame height (default: 1080)
 
