@@ -1,0 +1,5 @@
+python-socketio
+opencv-python
+python-dotenv
+uvicorn
+inference
