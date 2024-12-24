@@ -1,9 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import "./Boulders.css";
 
-const BOULDER_SIZE = 30; // pixels
+const SERVER_WEBCAM_WIDTH = import.meta.env.VITE_SERVER_WEBCAM_WIDTH;
+const SERVER_WEBCAM_HEIGHT = import.meta.env.VITE_SERVER_WEBCAM_HEIGHT;
+
+const BOULDER_SIZE = 50; // pixels
+
+const BOULDER_COLORS = ["red", "blue", "green"];
 
 const Boulder = ({ x, y }) => {
+  const color = useMemo(() => BOULDER_COLORS[Math.floor(Math.random() * BOULDER_COLORS.length)], []);
+
   return (
     <div
       className="boulder"
@@ -12,6 +19,9 @@ const Boulder = ({ x, y }) => {
         top: y,
         width: BOULDER_SIZE,
         height: BOULDER_SIZE,
+        backgroundImage: `url('/${color}.png')`,
+        backgroundSize: "cover",
+        backgroundColor: "transparent",
       }}
     />
   );
@@ -39,8 +49,8 @@ const Boulders = ({ handPositions, displaySize, gameSettings, onScoreUpdate }) =
   // Scale coordinates from server (1920x1080) to display size
   const scaleCoordinates = (coord, isWidth = true) => {
     return isWidth
-      ? (coord * displaySize.width) / process.env.SERVER_WEBCAM_WIDTH
-      : (coord * displaySize.height) / process.env.SERVER_WEBCAM_HEIGHT;
+      ? (coord * displaySize.width) / SERVER_WEBCAM_WIDTH
+      : (coord * displaySize.height) / SERVER_WEBCAM_HEIGHT;
   };
 
   // Update boulder spawning based on difficulty
@@ -113,7 +123,7 @@ const Boulders = ({ handPositions, displaySize, gameSettings, onScoreUpdate }) =
       {boulders.map((boulder) => (
         <Boulder key={boulder.id} x={boulder.x} y={boulder.y} />
       ))}
-      {process.env.NODE_ENV === "development" &&
+      {import.meta.env.VITE_DEBUG === "true" &&
         handPositions?.map((hand, i) => (
           <DebugBox
             key={i}
