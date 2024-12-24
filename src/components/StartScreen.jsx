@@ -1,10 +1,10 @@
 import "./StartScreen.css";
 
 const DIFFICULTY_SETTINGS = {
-  easy: { spawnInterval: 1000, speed: 3 },
-  medium: { spawnInterval: 500, speed: 5 },
-  hard: { spawnInterval: 300, speed: 7 },
-  extreme: { spawnInterval: 200, speed: 10 },
+  easy: { spawnInterval: 1000, speed: 3, color: "#4CAF50" }, // Green
+  medium: { spawnInterval: 500, speed: 5, color: "#2196F3" }, // Blue
+  hard: { spawnInterval: 300, speed: 7, color: "#FF9800" }, // Orange
+  extreme: { spawnInterval: 200, speed: 10, color: "#f44336" }, // Red
 };
 
 const StartScreen = ({ onStart }) => {
@@ -12,14 +12,20 @@ const StartScreen = ({ onStart }) => {
     <div className="start-screen">
       <h1>Boulder Crash</h1>
       <div className="difficulty-select">
-        <label htmlFor="difficulty">Select Difficulty:</label>
-        <select id="difficulty" onChange={(e) => onStart(DIFFICULTY_SETTINGS[e.target.value])}>
-          <option value="">Choose difficulty...</option>
-          <option value="easy">Easy</option>
-          <option value="medium">Medium</option>
-          <option value="hard">Hard</option>
-          <option value="extreme">Extreme</option>
-        </select>
+        <h2>Select Difficulty</h2>
+        <div className="difficulty-buttons">
+          {Object.entries(DIFFICULTY_SETTINGS).map(([level, settings]) => (
+            <button
+              key={level}
+              onClick={() => onStart(settings)}
+              className="difficulty-button"
+              style={{
+                backgroundColor: settings.color,
+              }}>
+              {level.charAt(0).toUpperCase() + level.slice(1)}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );
