@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./Boulders.css";
+
 const BOULDER_SIZE = 30; // pixels
 
 const Boulder = ({ x, y }) => {
@@ -31,16 +32,15 @@ const DebugBox = ({ obj, color }) => (
   />
 );
 
-const SERVER_WIDTH = 1920;
-const SERVER_HEIGHT = 1080;
-
 const Boulders = ({ handPositions, displaySize, gameSettings, onScoreUpdate }) => {
   const [boulders, setBoulders] = useState([]);
   const [, setScore] = useState(0);
 
   // Scale coordinates from server (1920x1080) to display size
   const scaleCoordinates = (coord, isWidth = true) => {
-    return isWidth ? (coord * displaySize.width) / SERVER_WIDTH : (coord * displaySize.height) / SERVER_HEIGHT;
+    return isWidth
+      ? (coord * displaySize.width) / process.env.SERVER_WEBCAM_WIDTH
+      : (coord * displaySize.height) / process.env.SERVER_WEBCAM_HEIGHT;
   };
 
   // Update boulder spawning based on difficulty
@@ -106,7 +106,7 @@ const Boulders = ({ handPositions, displaySize, gameSettings, onScoreUpdate }) =
         });
       });
     }
-  }, [handPositions, boulders, onScoreUpdate, displaySize]);
+  }, [handPositions, boulders, displaySize]);
 
   return (
     <div className="boulders-container">
@@ -132,13 +132,11 @@ const Boulders = ({ handPositions, displaySize, gameSettings, onScoreUpdate }) =
 
 // Helper function to check collision between hand and boulder
 const checkCollision = (hand, boulder) => {
-  // Add some padding to make collision detection more forgiving
-  const padding = 0;
   return (
-    hand.x - padding < boulder.x + boulder.width &&
-    hand.x + hand.width + padding > boulder.x &&
-    hand.y - padding < boulder.y + boulder.height &&
-    hand.y + hand.height + padding > boulder.y
+    hand.x < boulder.x + boulder.width &&
+    hand.x + hand.width > boulder.x &&
+    hand.y < boulder.y + boulder.height &&
+    hand.y + hand.height > boulder.y
   );
 };
 
