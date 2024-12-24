@@ -40,6 +40,23 @@ An interactive game that uses computer vision to detect hand movements and catch
    npm install
    ```
 
+## Environment Variables
+
+Create a `.env` file in each of the following directories:
+
+### workflow
+
+- `API_KEY` - Your API key for the computer vision service
+- `WORKSPACE_NAME` - Your Roboflow workspace name
+- `WORKFLOW_ID` - Your Roboflow workflow ID
+- `FRAME_WIDTH` - Webcam frame width (default: 1920)
+- `FRAME_HEIGHT` - Webcam frame height (default: 1080)
+
+### frontend
+
+- `VITE_SERVER_WEBCAM_WIDTH` - Server webcam width (should match backend)
+- `VITE_SERVER_WEBCAM_HEIGHT` - Server webcam height (should match backend)
+
 ## Running the Application
 
 1. Start the Python backend server:
@@ -64,18 +81,3 @@ An interactive game that uses computer vision to detect hand movements and catch
 - Backend server runs on port 6789
 - Frontend development server runs on port 5173
 - Make sure your webcam is accessible
-
-## Environment Variables
-
-### Backend (.env)
-
-- `API_KEY` - Your API key for the computer vision service
-- `WORKSPACE_NAME` - Your Roboflow workspace name
-- `WORKFLOW_ID` - Your Roboflow workflow ID
-- `FRAME_WIDTH` - Webcam frame width (default: 1920)
-- `FRAME_HEIGHT` - Webcam frame height (default: 1080)
-
-### Frontend
-
-- `VITE_SERVER_WEBCAM_WIDTH` - Server webcam width (should match backend)
-- `VITE_SERVER_WEBCAM_HEIGHT` - Server webcam height (should match backend)
