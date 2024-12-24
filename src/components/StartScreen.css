@@ -1,0 +1,39 @@
+.start-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 10;
+}
+
+.start-screen h1 {
+  color: #fff;
+  font-size: 3rem;
+  margin-bottom: 2rem;
+}
+
+.difficulty-select {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+
+.difficulty-select label {
+  color: #fff;
+  font-size: 1.2rem;
+}
+
+.difficulty-select select {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  background-color: #fff;
+  cursor: pointer;
+}

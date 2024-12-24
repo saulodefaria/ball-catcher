@@ -36,39 +36,44 @@ const DebugBox = ({ obj, color }) => (
   />
 );
 
-const Boulders = ({ handPositions }) => {
+const Boulders = ({ handPositions, gameSettings, onScoreUpdate }) => {
   const [boulders, setBoulders] = useState([]);
+  const [, setScore] = useState(0);
 
-  // Add boulders to the screen
+  // Update boulder spawning based on difficulty
   useEffect(() => {
+    if (!gameSettings) return;
+
     const interval = setInterval(() => {
       setBoulders((prev) => [
         ...prev,
         {
           id: Date.now(),
-          // x: WEBCAM_WIDTH - BOULDER_SIZE - 40,
-          // x: 0,
           x: Math.random() * (WEBCAM_WIDTH - BOULDER_SIZE - 40),
           y: 0,
         },
       ]);
-    }, 500);
+    }, gameSettings.spawnInterval);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [gameSettings]);
 
-  // Move boulders down the screen
+  // Update boulder movement based on difficulty
   useEffect(() => {
+    if (!gameSettings) return;
+
     const timer = setInterval(() => {
       setBoulders((prev) =>
-        prev.map((boulder) => ({ ...boulder, y: boulder.y + 5 })).filter((boulder) => boulder.y < WEBCAM_HEIGHT)
+        prev
+          .map((boulder) => ({ ...boulder, y: boulder.y + gameSettings.speed }))
+          .filter((boulder) => boulder.y < WEBCAM_HEIGHT)
       );
     }, 30);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [gameSettings]);
 
-  // Check for collisions
+  // Update collision detection to increment score
   useEffect(() => {
     if (handPositions && handPositions.length > 0) {
       handPositions.forEach((hand) => {
@@ -78,7 +83,6 @@ const Boulders = ({ handPositions }) => {
           width: hand.width,
           height: hand.height,
         };
-        console.log("Hand:", handObj);
 
         boulders.forEach((boulder) => {
           const boulderObj = {
@@ -90,31 +94,38 @@ const Boulders = ({ handPositions }) => {
 
           if (checkCollision(handObj, boulderObj)) {
             setBoulders((prev) => prev.filter((b) => b.id !== boulder.id));
+            setScore((prev) => {
+              const newScore = prev + 1;
+              onScoreUpdate(newScore);
+              return newScore;
+            });
           }
         });
       });
     }
-  }, [handPositions, boulders]);
+  }, [handPositions, boulders, onScoreUpdate]);
 
   return (
-    <div className="boulders-container">
-      {boulders.map((boulder) => (
-        <Boulder key={boulder.id} x={boulder.x} y={boulder.y} />
-      ))}
-      {process.env.NODE_ENV === "development" &&
-        handPositions?.map((hand, i) => (
-          <DebugBox
-            key={i}
-            obj={{
-              x: hand.x,
-              y: hand.y,
-              width: hand.width,
-              height: hand.height,
-            }}
-            color="red"
-          />
+    <>
+      <div className="boulders-container">
+        {boulders.map((boulder) => (
+          <Boulder key={boulder.id} x={boulder.x} y={boulder.y} />
         ))}
-    </div>
+        {process.env.NODE_ENV === "development" &&
+          handPositions?.map((hand, i) => (
+            <DebugBox
+              key={i}
+              obj={{
+                x: hand.x,
+                y: hand.y,
+                width: hand.width,
+                height: hand.height,
+              }}
+              color="red"
+            />
+          ))}
+      </div>
+    </>
   );
 };
 

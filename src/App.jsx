@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import CameraFeed from "./components/CameraFeed";
 import Boulders from "./components/Boulders";
+import StartScreen from "./components/StartScreen";
 import io from "socket.io-client";
 import "./App.css";
 
@@ -9,6 +10,8 @@ function App() {
   const [handPositions, setHandPositions] = useState([]);
   const socketRef = useRef(null);
   const [videoSettings, setVideoSettings] = useState(null);
+  const [gameSettings, setGameSettings] = useState(null);
+  const [score, setScore] = useState(0);
 
   useEffect(() => {
     console.log("Attempting to connect to WebSocket server...");
@@ -43,13 +46,36 @@ function App() {
     };
   }, []);
 
+  const handleStart = (settings) => {
+    setGameSettings(settings);
+    setScore(0);
+  };
+
+  const handleExit = () => {
+    setGameSettings(null);
+  };
+
   return (
     <div className="App">
       <div className="game-container">
         <CameraFeed ref={webcamRef} onVideoSettings={setVideoSettings} />
-        <Boulders handPositions={handPositions} videoSettings={videoSettings} />
+        {gameSettings ? (
+          <>
+            <Boulders
+              handPositions={handPositions}
+              videoSettings={videoSettings}
+              gameSettings={gameSettings}
+              onScoreUpdate={setScore}
+            />
+            <button className="exit-button" onClick={handleExit}>
+              Exit
+            </button>
+            <div className="score">Score: {score}</div>
+          </>
+        ) : (
+          <StartScreen onStart={handleStart} />
+        )}
       </div>
-      {/* Add score or other UI elements here */}
     </div>
   );
 }
