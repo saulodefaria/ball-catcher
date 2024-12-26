@@ -2,6 +2,10 @@
 
 An interactive game that uses computer vision to detect hand movements and catch falling balls, powered by [Roboflow](https://roboflow.com).
 
+## Demo
+
+[Click here for a quick video of the app in action.](https://www.loom.com/share/5c671dc3b76e4635993fa2c646c3714e?sid=92dc6f47-d609-42dc-a60b-88907a4cbead)
+
 ## Prerequisites
 
 - Python 3.12
