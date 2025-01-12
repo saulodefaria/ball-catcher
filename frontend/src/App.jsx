@@ -18,7 +18,6 @@ function App() {
     socketRef.current = io("http://localhost:6789", {
       transports: ["websocket"],
       reconnection: true,
-      // reconnectionAttempts: 5,
     });
 
     socketRef.current.on("connect", () => {
@@ -29,13 +28,14 @@ function App() {
       console.error("Connection error:", error);
     });
 
-    socketRef.current.on("handPosition", (data) => {
-      data = data.filter((hand) => hand.confidence > 0.75);
-      setHandPositions(data);
-    });
-
     socketRef.current.on("disconnect", (reason) => {
       console.log("Disconnected from WebSocket server. Reason:", reason);
+    });
+
+    // Listen for hand position data
+    socketRef.current.on("handPosition", (data) => {
+      data = data.filter((hand) => hand.confidence > 0.75); // Filter out low confidence hand positions
+      setHandPositions(data);
     });
 
     return () => {

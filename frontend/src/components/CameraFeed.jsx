@@ -1,5 +1,6 @@
 import React, { useEffect, useCallback } from "react";
 import Webcam from "react-webcam";
+import PropTypes from "prop-types";
 import "./CameraFeed.css";
 
 const CameraFeed = React.forwardRef(({ onDisplaySize }, ref) => {
@@ -26,8 +27,8 @@ const CameraFeed = React.forwardRef(({ onDisplaySize }, ref) => {
         mirrored={true}
         className="webcam-feed"
         videoConstraints={{
-          width: 1920,
-          height: 1080,
+          width: import.meta.env.VITE_SERVER_WEBCAM_WIDTH,
+          height: import.meta.env.VITE_SERVER_WEBCAM_HEIGHT,
         }}
       />
     </div>
@@ -35,5 +36,8 @@ const CameraFeed = React.forwardRef(({ onDisplaySize }, ref) => {
 });
 
 CameraFeed.displayName = "CameraFeed";
+CameraFeed.propTypes = {
+  onDisplaySize: PropTypes.func.isRequired,
+};
 
 export default CameraFeed;

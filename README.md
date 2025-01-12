@@ -60,6 +60,7 @@ Create a `.env` file in each of the following directories:
 
 - `VITE_SERVER_WEBCAM_WIDTH` - Server webcam width (should match workflow)
 - `VITE_SERVER_WEBCAM_HEIGHT` - Server webcam height (should match workflow)
+- `VITE_DEBUG` - Whether to enable debug mode: add a red border to the detected hand (default: false)
 
 ## Running the Application
 

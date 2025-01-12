@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
+import PropTypes from "prop-types";
 import "./Boulders.css";
 
 const SERVER_WEBCAM_WIDTH = import.meta.env.VITE_SERVER_WEBCAM_WIDTH;
@@ -27,6 +28,11 @@ const Boulder = ({ x, y }) => {
   );
 };
 
+Boulder.propTypes = {
+  x: PropTypes.number.isRequired,
+  y: PropTypes.number.isRequired,
+};
+
 const DebugBox = ({ obj, color }) => (
   <div
     style={{
@@ -42,22 +48,33 @@ const DebugBox = ({ obj, color }) => (
   />
 );
 
+DebugBox.propTypes = {
+  obj: PropTypes.shape({
+    x: PropTypes.number.isRequired,
+    y: PropTypes.number.isRequired,
+    width: PropTypes.number.isRequired,
+    height: PropTypes.number.isRequired,
+  }).isRequired,
+  color: PropTypes.string.isRequired,
+};
+
 const Boulders = ({ handPositions, displaySize, gameSettings, onScoreUpdate }) => {
   const [boulders, setBoulders] = useState([]);
   const [, setScore] = useState(0);
 
-  // Scale coordinates from server (1920x1080) to display size
+  // Scale coordinates from server to display size
   const scaleCoordinates = (coord, isWidth = true) => {
     return isWidth
       ? (coord * displaySize.width) / SERVER_WEBCAM_WIDTH
       : (coord * displaySize.height) / SERVER_WEBCAM_HEIGHT;
   };
 
-  // Update boulder spawning based on difficulty
+  // Handle boulder spawning and movement
   useEffect(() => {
     if (!gameSettings) return;
 
-    const interval = setInterval(() => {
+    // Spawn new boulders
+    const spawnInterval = setInterval(() => {
       setBoulders((prev) => [
         ...prev,
         {
@@ -68,14 +85,8 @@ const Boulders = ({ handPositions, displaySize, gameSettings, onScoreUpdate }) =
       ]);
     }, gameSettings.spawnInterval);
 
-    return () => clearInterval(interval);
-  }, [gameSettings, displaySize]);
-
-  // Update boulder movement based on difficulty
-  useEffect(() => {
-    if (!gameSettings) return;
-
-    const timer = setInterval(() => {
+    // Move existing boulders
+    const moveInterval = setInterval(() => {
       setBoulders((prev) =>
         prev
           .map((boulder) => ({ ...boulder, y: boulder.y + gameSettings.speed }))
@@ -83,8 +94,12 @@ const Boulders = ({ handPositions, displaySize, gameSettings, onScoreUpdate }) =
       );
     }, 30);
 
-    return () => clearInterval(timer);
-  }, [gameSettings]);
+    // Cleanup both intervals
+    return () => {
+      clearInterval(spawnInterval);
+      clearInterval(moveInterval);
+    };
+  }, [gameSettings, displaySize]);
 
   // Update collision detection with scaled coordinates
   useEffect(() => {
@@ -138,6 +153,26 @@ const Boulders = ({ handPositions, displaySize, gameSettings, onScoreUpdate }) =
         ))}
     </div>
   );
+};
+
+Boulders.propTypes = {
+  handPositions: PropTypes.arrayOf(
+    PropTypes.shape({
+      x: PropTypes.number.isRequired,
+      y: PropTypes.number.isRequired,
+      width: PropTypes.number.isRequired,
+      height: PropTypes.number.isRequired,
+    })
+  ).isRequired,
+  displaySize: PropTypes.shape({
+    width: PropTypes.number.isRequired,
+    height: PropTypes.number.isRequired,
+  }).isRequired,
+  gameSettings: PropTypes.shape({
+    spawnInterval: PropTypes.number.isRequired,
+    speed: PropTypes.number.isRequired,
+  }).isRequired,
+  onScoreUpdate: PropTypes.func.isRequired,
 };
 
 // Helper function to check collision between hand and boulder

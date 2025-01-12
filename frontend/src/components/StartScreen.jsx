@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import "./StartScreen.css";
 
 const DIFFICULTY_SETTINGS = {
@@ -30,6 +31,10 @@ const StartScreen = ({ onStart }) => {
       </div>
     </div>
   );
+};
+
+StartScreen.propTypes = {
+  onStart: PropTypes.func.isRequired,
 };
 
 export default StartScreen;
