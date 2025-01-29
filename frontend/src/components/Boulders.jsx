@@ -2,9 +2,6 @@ import { useEffect, useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import "./Boulders.css";
 
-const SERVER_WEBCAM_WIDTH = import.meta.env.VITE_SERVER_WEBCAM_WIDTH;
-const SERVER_WEBCAM_HEIGHT = import.meta.env.VITE_SERVER_WEBCAM_HEIGHT;
-
 const BOULDER_SIZE = 50; // pixels
 
 const BOULDER_COLORS = ["red", "blue", "green"];
@@ -37,7 +34,7 @@ const DebugBox = ({ obj, color }) => (
   <div
     style={{
       position: "absolute",
-      right: obj.x,
+      left: obj.x,
       top: obj.y,
       width: obj.width,
       height: obj.height,
@@ -61,13 +58,6 @@ DebugBox.propTypes = {
 const Boulders = ({ handPositions, displaySize, gameSettings, onScoreUpdate }) => {
   const [boulders, setBoulders] = useState([]);
   const [, setScore] = useState(0);
-
-  // Scale coordinates from server to display size
-  const scaleCoordinates = (coord, isWidth = true) => {
-    return isWidth
-      ? (coord * displaySize.width) / SERVER_WEBCAM_WIDTH
-      : (coord * displaySize.height) / SERVER_WEBCAM_HEIGHT;
-  };
 
   // Handle boulder spawning and movement
   useEffect(() => {
@@ -101,15 +91,21 @@ const Boulders = ({ handPositions, displaySize, gameSettings, onScoreUpdate }) =
     };
   }, [gameSettings, displaySize]);
 
-  // Update collision detection with scaled coordinates
+  const scaleCoordinates = (coord, originalSize, targetSize) => {
+    return (coord * targetSize) / originalSize;
+  };
+
+  // Update the debug box rendering and collision detection
   useEffect(() => {
     if (handPositions && handPositions.length > 0) {
       handPositions.forEach((hand) => {
+        if (!hand.originalWidth || !hand.originalHeight) return;
+
         const handObj = {
-          x: displaySize.width - scaleCoordinates(hand.x + hand.width),
-          y: scaleCoordinates(hand.y, false),
-          width: scaleCoordinates(hand.width),
-          height: scaleCoordinates(hand.height, false),
+          x: scaleCoordinates(hand.x, hand.originalWidth, displaySize.width),
+          y: scaleCoordinates(hand.y, hand.originalHeight, displaySize.height),
+          width: scaleCoordinates(hand.width, hand.originalWidth, displaySize.width),
+          height: scaleCoordinates(hand.height, hand.originalHeight, displaySize.height),
         };
 
         boulders.forEach((boulder) => {
@@ -143,10 +139,10 @@ const Boulders = ({ handPositions, displaySize, gameSettings, onScoreUpdate }) =
           <DebugBox
             key={i}
             obj={{
-              x: scaleCoordinates(hand.x),
-              y: scaleCoordinates(hand.y, false),
-              width: scaleCoordinates(hand.width),
-              height: scaleCoordinates(hand.height, false),
+              x: scaleCoordinates(hand.x, hand.originalWidth, displaySize.width),
+              y: scaleCoordinates(hand.y, hand.originalHeight, displaySize.height),
+              width: scaleCoordinates(hand.width, hand.originalWidth, displaySize.width),
+              height: scaleCoordinates(hand.height, hand.originalHeight, displaySize.height),
             }}
             color="red"
           />
