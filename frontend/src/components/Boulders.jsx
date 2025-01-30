@@ -37,7 +37,7 @@ const DebugBox = ({ obj, color }) => (
   <div
     style={{
       position: "absolute",
-      right: obj.x,
+      left: obj.x,
       top: obj.y,
       width: obj.width,
       height: obj.height,
@@ -63,10 +63,13 @@ const Boulders = ({ handPositions, displaySize, gameSettings, onScoreUpdate }) =
   const [, setScore] = useState(0);
 
   // Scale coordinates from server to display size
+  // const scaleCoordinates = (coord, isWidth = true) => {
+  //   return isWidth
+  //     ? (coord * displaySize.width) / SERVER_WEBCAM_WIDTH
+  //     : (coord * displaySize.height) / SERVER_WEBCAM_HEIGHT;
+  // };
   const scaleCoordinates = (coord, isWidth = true) => {
-    return isWidth
-      ? (coord * displaySize.width) / SERVER_WEBCAM_WIDTH
-      : (coord * displaySize.height) / SERVER_WEBCAM_HEIGHT;
+    return coord;
   };
 
   // Handle boulder spawning and movement
@@ -106,10 +109,10 @@ const Boulders = ({ handPositions, displaySize, gameSettings, onScoreUpdate }) =
     if (handPositions && handPositions.length > 0) {
       handPositions.forEach((hand) => {
         const handObj = {
-          x: displaySize.width - scaleCoordinates(hand.x + hand.width),
-          y: scaleCoordinates(hand.y, false),
-          width: scaleCoordinates(hand.width),
-          height: scaleCoordinates(hand.height, false),
+          x: hand.x + hand.width / 2,
+          y: hand.y - hand.height / 2,
+          width: hand.width,
+          height: hand.height,
         };
 
         boulders.forEach((boulder) => {
@@ -143,10 +146,10 @@ const Boulders = ({ handPositions, displaySize, gameSettings, onScoreUpdate }) =
           <DebugBox
             key={i}
             obj={{
-              x: scaleCoordinates(hand.x),
-              y: scaleCoordinates(hand.y, false),
-              width: scaleCoordinates(hand.width),
-              height: scaleCoordinates(hand.height, false),
+              x: hand.x + hand.width / 2,
+              y: hand.y - hand.height / 2,
+              width: hand.width,
+              height: hand.height,
             }}
             color="red"
           />
