@@ -6,7 +6,8 @@ import StartScreen from "./components/StartScreen";
 import "./App.css";
 
 async function getPrediction(base64Frame) {
-  const response = await fetch("http://104.248.123.197:9001/infer/workflows/saulofaria/hand-detection", {
+  // const response = await fetch("https://104.248.123.197:9001/infer/workflows/saulofaria/hand-detection", {
+  const response = await fetch("https://inference.saulofaria.com/infer/workflows/saulofaria/hand-detection", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
